@@ -1,1 +1,2 @@
 # CEN0336_2026_13660999_Python08
+Nesse repositório estão os scripts e arquivos de saída referentes a resolução dos exercícios presentes no Python_08_problemset. Os scripts possuem comentários que indicam a lógica por trás de cada etapa do código. Os comentários de commit identificam a qual exercício cada script é referente. Os testes realizados após a escrita do código, para verificação do funcionamento do mesmo, se encontram detalhados no documento PDF entregue no edisciplinas.
