@@ -69,6 +69,7 @@ tabela_traducao = {
     'TGG':'W',
     'TAT':'Y', 'TAC':'Y',
     'GTT':'V', 'GTC':'V', 'GTA':'V', 'GTG':'V',
+    'TAA':'*', 'TGA':'*', 'TAG':'*'
 }
 
 #Dividindo a sequência em códons
@@ -81,117 +82,71 @@ with open(saida_filename_frames, 'w') as out_file_frames, \
         maior_peptideo = ""
         maior_frame = None
 
-        rev_sequence = sequence.translate(tabela_bases)[::-1]
+        #Sequência direta (três primeiros frames de leitura, igual o exercício anterior)
 
-######## OBSERVAÇÃO: esse trecho delimitado for dado pela IA, porque o código estava gerando um arquivo vazio (0 bytes) e não consegui entender o motivo e corriji-lo no código original ########
+        for frame in range(1, 4):
+            start_index = frame - 1
+            codons = [sequence[i:i+3] for i in range(start_index, len(sequence), 3)]
 
-        #mapeando os quadros de leitura
+            #traduzindo apenas códons completos (de 3 bases)
 
-        frames = [
-            (1, sequence, 0),
-            (2, sequence, 1),
-            (3, sequence, 2),
-            (4, rev_sequence, 0),
-            (5, rev_sequence, 1),
-            (6, rev_sequence, 2)
-      ]
-
-        for frame_num, seq_strand, start_index in frames:
-            codons = [seq_strand[i:i+3] for i in range(start_index, len(seq_strand), 3)]
-            aminoacids = [tabela_traducao.get(c, 'X') for c in codons if len(c) == 3]
-
-######## TRECHO DELIMITADO ########
+            aminoacids_list = [tabela_traducao.get(c, 'X') for c in codons if len(c) == 3]
 
             #formatando a parte de cima da sequência e os espaços entre os códons
 
-            header_frames = f">{seq_id}-frame-{frame_num}-codons"
-            header_aa = f">{seq_id}-frame-{frame_num}-aminoacids"
+            header_frames = f"{seq_id}-frame-{frame}-codons"
+            header_aa = f"{seq_id}-frame-{frame}-aminoacids"
 
             #escrevendo no arquivo de saída
 
             out_file_frames.write(f"{header_frames}\n{' '.join(codons)}\n")
-            out_file_aa.write(f"{header_aa}\n{' '.join(aminoacids)}\n")
+            out_file_aa.write(f"{header_aa}\n{' '.join(aminoacids_list)}\n")
 
             #buscando peptídeos (M => Stop)
 
-            aa_str = "".join(aminoacids)
-            peptideos_encontrados = re.findall(r'M[^*]*\*?', aa_str)
-
+            aa_str = "".join(aminoacids_list)
+            peptideos_encontrados = re.findall(r'M[^*]*\*', aa_str) #uso de expressõs regulares
             for pep in peptideos_encontrados:
-                peptideo = pep.rstrip('*')
+                peptideo = pep.rstrip('*')  #remove o '*' final do peptídeo
                 if len(peptideo) > len(maior_peptideo):
-                    maior_peptideo = peptideo
-                    maior_frame = frame_num
-
-######## OBSERVAÇÃO: Esse é código original, peguei o código base dos demais exercícios e modifiquei para buscar pelo peptídeo mais longo, porém ele gerou um arquivo vazio e não consegui entender o motivo e resolver o bug. Deixo aqui o código, porque gostaria de uma devolutiva, se possível, de onde está o problema. ######## 
-
-        #Sequência direta (três primeiros frames de leitura, igual o exercício anterior)
-
-        #for frame in range(1, 4):
-            #start_index = frame - 1
-            #codons = [sequence[i:i+3] for i in range(start_index, len(sequence), 3)]
-
-            #traduzindo apenas códons completos (de 3 bases)
-
-            #aminoacids_list = [tabela_traducao.get(c, 'X') for c in codons if len(c) == 3]
-
-            #formatando a parte de cima da sequência e os espaços entre os códons
-
-            #header_frames = f"{seq_id}-frame-{frame}-codons"
-            #header_aa = f"{seq_id}-frame-{frame}-aminoacids"
-
-            #escrevendo no arquivo de saída
-
-            #out_file_frames.write(f"{header_frames}\n{' '.join(codons)}\n")
-            #out_file_aa.write(f"{header_aa}\n{' '.join(aminoacids_list)}\n")
-
-            #buscando peptídeos (M => Stop)
-
-            #aa_str = "".join(aminoacids_list)
-            #peptideos_encontrados = re.findall(r'M[^*]*\*', aa_str) #uso de expressõs regulares
-            #for pep in peptideos_encontrados:
-                #peptideo = pep.rstrip('*')  #remove o '*' final do peptídeo
-                #if len(peptideo) > len(maior_peptideo):
-                   # maior_peptideo = peptideo
-                   # maior_frame = frame
+                   maior_peptideo = peptideo
+                   maior_frame = frame
 
         #Sequência complementar
 
         #Substituindo cada base pelo complemento e invertendo a string
 
-        #rev_sequence = sequence.translate(tabela_bases)[::-1]
-        #for frame in range(1, 4):
-           #frame_num = frame + 3
-           #start_index = frame - 1
-            #codons = [rev_sequence[i:i+3] for i in range(start_index, len(rev_sequence), 3)]
+        rev_sequence = sequence.translate(tabela_bases)[::-1]
+        for frame in range(1, 4):
+            frame_num = frame + 3
+            start_index = frame - 1
+            codons = [rev_sequence[i:i+3] for i in range(start_index, len(rev_sequence), 3)]
 
             #traduzindo apenas códons completos (de 3 bases)
 
-            #aminoacids_list = [tabela_traducao.get(c, 'X') for c in codons if len(c) == 3]
+            aminoacids_list = [tabela_traducao.get(c, 'X') for c in codons if len(c) == 3]
 
             #formatando a parte de cima da sequência e os espaços entre os códons
 
-            #header_frames = f"{seq_id}-frame-{frame_num}-codons"
-            #header_aa = f"{seq_id}-frame-{frame_num}-aminoacids"
+            header_frames = f"{seq_id}-frame-{frame_num}-codons"
+            header_aa = f"{seq_id}-frame-{frame_num}-aminoacids"
 
             #escrevendo no arquivo de saída
 
-            #out_file_frames.write(f"{header_frames}\n{' '.join(codons)}\n")
-            #out_file_aa.write(f"{header_aa}\n{' '.join(aminoacids_list)}\n")
+            out_file_frames.write(f"{header_frames}\n{' '.join(codons)}\n")
+            out_file_aa.write(f"{header_aa}\n{' '.join(aminoacids_list)}\n")
 
             #buscando por peptídeos (M => Stop) neste frame
 
-            #aa_str = "".join(aminoacids_list)
-            #peptideos_encontrados = re.findall(r'M[^*]*\*', aa_str) #uso de expressões regulares
-            #for pep in peptideos_encontrados:
-                #peptideo = pep.rstrip('*')  #remove o '*' final do peptídeo
-                #if len(peptideo) > len(maior_peptideo):
-                    #maior_peptideo = peptideo
-                    #maior_frame = frame_num
+            aa_str = "".join(aminoacids_list)
+            peptideos_encontrados = re.findall(r'M[^*]*\*', aa_str) #uso de expressões regulares
+            for pep in peptideos_encontrados:
+                peptideo = pep.rstrip('*')  #remove o '*' final do peptídeo
+                if len(peptideo) > len(maior_peptideo):
+                    maior_peptideo = peptideo
+                    maior_frame = frame_num
 
-########################################################################################################################
-
-    #Escrevendo o maior peptídeo encontrado entre todos os frames
+#Escrevendo o maior peptídeo encontrado entre todos os frames
 
     if maior_peptideo:
        header_longest = f">{seq_id}-frame-{maior_frame}-longest-peptide"
