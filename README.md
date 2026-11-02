@@ -1,1 +1,2 @@
 # CEN0336_2026_13660999_Python08
+Esse repositório contem os scripts, arquivos de saída e arquivos de teste utilizados para resolução do conjunto de problemas do módulo Python 8 - Estruturas de dados. A mensagem de commit indica a qual exercício o script é referente. Todos os códigos possuem comentários que explicam, brevemente, o que está sendo realizado em cada etapa. Além disso, um relatório com explicações mais detalhadas foi enviado no edisciplinas. 
